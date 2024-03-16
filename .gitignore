@@ -1,6 +1,7 @@
 **/__pycache__/
 
 .env
+.env_non_dev
 venv
 env/
 venv/
