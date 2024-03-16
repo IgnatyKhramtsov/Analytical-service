@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:16
+    container_name: db_app
+    healthcheck:
+      test: pg_isready -h db -p 1221
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    command:
+      -p 1221
+    expose:
+      - 1221
+    env_file:
+      - .env_non_dev
+    networks:
+      - custom
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env_non_dev
+    container_name: fastapi_app
+    command: ["/fastapi_app/docker/app.sh"]
+    ports:
+      - 8001:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - custom
+
+networks:
+  custom:
+    driver: bridge
